@@ -1,0 +1,25 @@
+# 放到你自己 fork 的 .github/workflows/ 下，然后在 Actions 页面手动 Run。
+# 作用：官方 flutter-build.yml 只有 workflow_call，没有手动触发入口，这里包一层。
+#
+# 注意：
+#   1. 官方工作流里可能需要 secrets（签名相关）。没有 secrets 通常只影响签名/发布，
+#      不影响出包；若某 job 报缺 secret，把对应签名步骤注释掉再跑。
+#   2. 首次运行前先确认 submodule 已被 checkout（官方工作流内部一般会处理；
+#      若报 hbb_common 缺失，在 repo 设置里确保 Actions 有 submodule 读取权限）。
+name: Build custom client
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload-artifact:
+        description: "上传构建产物为 artifact"
+        type: boolean
+        default: true
+
+jobs:
+  call-official-build:
+    uses: ./.github/workflows/flutter-build.yml
+    with:
+      upload-artifact: ${{ inputs.upload-artifact }}
+      upload-tag: "custom"
+      publish-update-metadata: false
