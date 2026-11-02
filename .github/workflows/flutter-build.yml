@@ -1113,6 +1113,11 @@ jobs:
           # Opt-in, and its macOS tests run nowhere else.
           cargo test --locked --release -p clipboard --features unix-file-copy-paste
 
+      - name: Re-sign mac app adhoc for unsigned distribution
+        if: env.UPLOAD_ARTIFACT == 'true'
+        run: |
+          codesign --force --deep -s - ./flutter/build/macos/Build/Products/Release/zldesk.app
+
       - name: create unsigned dmg
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
