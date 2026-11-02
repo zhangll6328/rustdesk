@@ -15,11 +15,15 @@ on:
         description: "上传构建产物为 artifact"
         type: boolean
         default: true
+      upload-tag:
+        description: "并发组/发布标签（隔离不同批次构建）"
+        type: string
+        default: "custom"
 
 jobs:
   call-official-build:
     uses: ./.github/workflows/flutter-build.yml
     with:
       upload-artifact: ${{ inputs.upload-artifact }}
-      upload-tag: "custom"
+      upload-tag: ${{ inputs.upload-tag }}
       publish-update-metadata: false
