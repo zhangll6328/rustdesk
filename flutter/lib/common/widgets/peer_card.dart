@@ -86,10 +86,15 @@ class _PeerCardState extends State<_PeerCard>
 
   Widget _buildPortrait() {
     final peer = super.widget.peer;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Card(
-        elevation: 0.5,
+        elevation: isDark ? 0 : 1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
+          side: BorderSide(
+            color: isDark ? const Color(0xFF2A2F3D) : const Color(0xFFE5E7EB),
+            width: 1,
+          ),
         ),
         margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: gestureDetector(

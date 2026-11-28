@@ -248,13 +248,13 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
 class MyTheme {
   MyTheme._();
 
-  static const Color grayBg = Color(0xFFF5F6F8);
+  static const Color grayBg = Color(0xFFF3F4F6);
   static const Color accent = Color(0xFF2563EB);
   static const Color accent50 = Color(0x802563EB);
   static const Color accent80 = Color(0xCC2563EB);
-  static const Color canvasColor = Color(0xFF111318);
+  static const Color canvasColor = Color(0xFF0F1117);
   static const Color border = Color(0xFFE5E7EB);
-  static const Color idColor = Color(0xFF1D4ED8);
+  static const Color idColor = Color(0xFF3B82F6);
   static const Color darkGray = Color.fromARGB(255, 148, 148, 148);
   static const Color cmIdColor = Color(0xFF15803D);
   static const Color dark = Colors.black87;
@@ -374,7 +374,7 @@ class MyTheme {
     useMaterial3: false,
     brightness: Brightness.light,
     hoverColor: Color(0xFFF1F5F9),
-    scaffoldBackgroundColor: Color(0xFFF7F8FA),
+    scaffoldBackgroundColor: Color(0xFFF3F4F6),
     dialogBackgroundColor: Colors.white,
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
@@ -473,8 +473,8 @@ class MyTheme {
     useMaterial3: false,
     brightness: Brightness.dark,
     hoverColor: Color(0xFF232732),
-    scaffoldBackgroundColor: Color(0xFF111318),
-    dialogBackgroundColor: Color(0xFF1A1D24),
+    scaffoldBackgroundColor: Color(0xFF0F1117),
+    dialogBackgroundColor: Color(0xFF1C2029),
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
     ),
@@ -510,7 +510,7 @@ class MyTheme {
         color: accent80,
       ),
     ),
-    cardColor: Color(0xFF1A1D24),
+    cardColor: Color(0xFF1C2029),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     tabBarTheme: const TabBarTheme(
       labelColor: Colors.white70,
