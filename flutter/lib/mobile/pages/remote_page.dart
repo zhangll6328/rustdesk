@@ -1002,6 +1002,8 @@ class _KeyHelpToolsState extends State<KeyHelpTools> {
 
   void _sendCombo(String keyName,
       {bool useCommand = false, bool useCtrl = false, bool useAlt = false}) {
+    if (!inputModel.keyboardPerm) return;
+    if (inputModel.isViewCamera) return;
     bind.sessionInputKey(
       sessionId: inputModel.sessionId,
       name: keyName,
