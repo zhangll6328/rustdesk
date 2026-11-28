@@ -769,8 +769,10 @@ class _SettingsState extends State<SettingsPage> with WidgetsBindingObserver {
         SettingsSection(title: Text(translate("Settings")), tiles: [
           if (!zldeskGeekModeUnlocked.value)
             SettingsTile(
-              title: Text('ZLDesk 专属中继'),
-              description: Text('已连接并锁定（普通用户极简模式）'),
+              title: Text('ZLDesk 专属服务'),
+              description: Text(!_isUsingPublicServer
+                  ? '已启用内置中继配置（极简模式已隐藏网络参数）'
+                  : '普通用户极简模式（已隐藏网络参数）'),
               leading: Icon(Icons.verified_user_outlined),
             ),
           if (zldeskGeekModeUnlocked.value &&
