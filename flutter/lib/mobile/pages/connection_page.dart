@@ -47,6 +47,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
   final AllPeersLoader _allPeersLoader = AllPeersLoader();
 
   StreamSubscription? _uniLinksSubscription;
+  String _lastRemoteId = '';
 
   // https://github.com/flutter/flutter/issues/157244
   Iterable<Peer> _autocompleteOpts = [];
@@ -63,27 +64,59 @@ class _ConnectionPageState extends State<ConnectionPage> {
   void initState() {
     super.initState();
     _allPeersLoader.init(setState);
+    _allPeersLoader.getAllPeers();
     _idFocusNode.addListener(onFocusChanged);
-    if (_idController.text.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        final lastRemoteId = await bind.mainGetLastRemoteId();
-        if (lastRemoteId != _idController.id) {
-          setState(() {
-            _idController.id = lastRemoteId;
-          });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final lastRemoteId = await bind.mainGetLastRemoteId();
+      if (!mounted) return;
+      setState(() {
+        _lastRemoteId = lastRemoteId;
+        if (_idController.text.isEmpty && lastRemoteId != _idController.id) {
+          _idController.id = lastRemoteId;
         }
       });
-    }
+    });
     Get.put<TextEditingController>(_idEditingController);
   }
 
+  Widget _buildHarnessPill(String label, String? targetId, bool isDark) {
+    return ActionChip(
+      label: Text(label, style: const TextStyle(fontSize: 12)),
+      avatar: const Icon(Icons.bolt, size: 14, color: MyTheme.accent),
+      backgroundColor:
+          isDark ? const Color(0xFF232732) : const Color(0xFFF3F4F6),
+      side: BorderSide(
+        color: isDark ? const Color(0xFF2A2F3D) : const Color(0xFFE5E7EB),
+      ),
+      onPressed: targetId == null ? null : () => connect(context, targetId),
+    );
+  }
+
   Widget _buildAntigravityQuickCard() {
-    final Peer? primaryPeer =
+    Peer? primaryPeer;
+    if (_lastRemoteId.isNotEmpty) {
+      for (final p in _allPeersLoader.peers) {
+        if (p.id == _lastRemoteId) {
+          primaryPeer = p;
+          break;
+        }
+      }
+    }
+    primaryPeer ??=
         _allPeersLoader.peers.isNotEmpty ? _allPeersLoader.peers.first : null;
+    final String? targetId =
+        _lastRemoteId.isNotEmpty ? _lastRemoteId : primaryPeer?.id;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final String subtitle = primaryPeer == null
+    final String displayName = primaryPeer != null
+        ? (primaryPeer.alias.isNotEmpty
+            ? primaryPeer.alias
+            : (primaryPeer.hostname.isNotEmpty
+                ? primaryPeer.hostname
+                : primaryPeer.id))
+        : (targetId ?? '');
+    final String subtitle = targetId == null
         ? '首次连接 Mac mini 等常用主机后，将在此一键直达'
-        : '${primaryPeer.alias.isNotEmpty ? primaryPeer.alias : (primaryPeer.hostname.isNotEmpty ? primaryPeer.hostname : primaryPeer.id)} (${primaryPeer.id})';
+        : (displayName == targetId ? targetId : '$displayName ($targetId)');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
       child: Material(
@@ -97,58 +130,71 @@ class _ConnectionPageState extends State<ConnectionPage> {
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
-          onTap: primaryPeer == null
-              ? null
-              : () => connect(context, primaryPeer.id),
+          onTap: targetId == null ? null : () => connect(context, targetId),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: MyTheme.accent.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(Icons.auto_awesome,
-                      color: MyTheme.accent, size: 20),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Antigravity · 常用主机直连',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w600),
+                Row(
+                  children: [
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: MyTheme.accent.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isDark ? Colors.white60 : Colors.black54,
+                      child: const Icon(Icons.auto_awesome,
+                          color: MyTheme.accent, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'AI 工作台 · 常用主机直连',
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            subtitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isDark ? Colors.white60 : Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (targetId != null) ...[
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          minimumSize: Size.zero,
                         ),
+                        onPressed: () => connect(context, targetId),
+                        child: const Text('直连', style: TextStyle(fontSize: 12)),
                       ),
                     ],
-                  ),
+                  ],
                 ),
-                if (primaryPeer != null) ...[
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      minimumSize: Size.zero,
-                    ),
-                    onPressed: () => connect(context, primaryPeer.id),
-                    child: const Text('直连', style: TextStyle(fontSize: 12)),
-                  ),
-                ],
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    _buildHarnessPill('Antigravity', targetId, isDark),
+                    _buildHarnessPill('ZCode', targetId, isDark),
+                    _buildHarnessPill('DSH', targetId, isDark),
+                  ],
+                ),
               ],
             ),
           ),
