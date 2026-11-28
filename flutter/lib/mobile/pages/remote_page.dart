@@ -1000,6 +1000,22 @@ class _KeyHelpToolsState extends State<KeyHelpTools> {
 
   InputModel get inputModel => gFFI.inputModel;
 
+  void _sendCombo(String keyName,
+      {bool useCommand = false, bool useCtrl = false, bool useAlt = false}) {
+    if (!inputModel.keyboardPerm) return;
+    if (inputModel.isViewCamera) return;
+    bind.sessionInputKey(
+      sessionId: inputModel.sessionId,
+      name: keyName,
+      down: false,
+      press: true,
+      alt: useAlt,
+      ctrl: useCtrl,
+      shift: false,
+      command: useCommand,
+    );
+  }
+
   Widget wrap(String text, void Function() onPressed,
       {bool? active, IconData? icon}) {
     return TextButton(
@@ -1110,6 +1126,18 @@ class _KeyHelpToolsState extends State<KeyHelpTools> {
     }
     final more = <Widget>[
       SizedBox(width: 9999),
+      if (isMac) ...[
+        wrap('⌘C', () => _sendCombo('c', useCommand: true)),
+        wrap('⌘V', () => _sendCombo('v', useCommand: true)),
+        wrap('⌘Z', () => _sendCombo('z', useCommand: true)),
+        wrap('聚焦', () => _sendCombo('VK_SPACE', useCommand: true)),
+        wrap('⌘Tab', () => _sendCombo('VK_TAB', useCommand: true)),
+      ] else if (isWin || isLinux) ...[
+        wrap('Ctrl+C', () => _sendCombo('c', useCtrl: true)),
+        wrap('Ctrl+V', () => _sendCombo('v', useCtrl: true)),
+        wrap('Ctrl+Z', () => _sendCombo('z', useCtrl: true)),
+        wrap('Alt+Tab', () => _sendCombo('VK_TAB', useAlt: true)),
+      ],
       wrap('Esc', () {
         inputModel.inputKey('VK_ESCAPE');
       }),
