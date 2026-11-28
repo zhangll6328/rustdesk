@@ -77,6 +77,86 @@ class _ConnectionPageState extends State<ConnectionPage> {
     Get.put<TextEditingController>(_idEditingController);
   }
 
+  Widget _buildAntigravityQuickCard() {
+    final Peer? primaryPeer =
+        _allPeersLoader.peers.isNotEmpty ? _allPeersLoader.peers.first : null;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final String subtitle = primaryPeer == null
+        ? '首次连接 Mac mini 等常用主机后，将在此一键直达'
+        : '${primaryPeer.alias.isNotEmpty ? primaryPeer.alias : (primaryPeer.hostname.isNotEmpty ? primaryPeer.hostname : primaryPeer.id)} (${primaryPeer.id})';
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+      child: Material(
+        color: Theme.of(context).cardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(
+            color: isDark ? const Color(0xFF2A2F3D) : const Color(0xFFE5E7EB),
+            width: 1,
+          ),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: primaryPeer == null
+              ? null
+              : () => connect(context, primaryPeer.id),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: MyTheme.accent.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.auto_awesome,
+                      color: MyTheme.accent, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Antigravity · 常用主机直连',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isDark ? Colors.white60 : Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (primaryPeer != null) ...[
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      minimumSize: Size.zero,
+                    ),
+                    onPressed: () => connect(context, primaryPeer.id),
+                    child: const Text('直连', style: TextStyle(fontSize: 12)),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<FfiModel>(context);
@@ -339,7 +419,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
                 height: 60,
                 child: IconButton(
                   icon: const Icon(Icons.arrow_forward,
-                      color: MyTheme.darkGray, size: 45),
+                      color: MyTheme.accent, size: 36),
                   onPressed: onConnect,
                 ),
               ),
@@ -352,7 +432,8 @@ class _ConnectionPageState extends State<ConnectionPage> {
       if (isWebDesktop)
         getConnectionPageTitle(context, true)
             .marginOnly(bottom: 10, top: 15, left: 12),
-      w
+      w,
+      _buildAntigravityQuickCard(),
     ]);
     return Align(
         alignment: Alignment.topCenter,
