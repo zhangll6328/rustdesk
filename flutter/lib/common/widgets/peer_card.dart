@@ -50,8 +50,8 @@ class _PeerCardState extends State<_PeerCard>
     with AutomaticKeepAliveClientMixin {
   var _menuPos = RelativeRect.fill;
   final double _cardRadius = 16;
-  final double _tileRadius = 5;
-  final double _borderWidth = 2;
+  final double _tileRadius = 12;
+  final double _borderWidth = 1.5;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,11 @@ class _PeerCardState extends State<_PeerCard>
   Widget _buildPortrait() {
     final peer = super.widget.peer;
     return Card(
-        margin: EdgeInsets.symmetric(horizontal: 2),
+        elevation: 0.5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: gestureDetector(
           child: Container(
               padding: EdgeInsets.only(left: 12, top: 8, bottom: 8),
