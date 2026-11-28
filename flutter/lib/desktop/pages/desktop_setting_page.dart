@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hbb/common.dart';
+import 'package:flutter_hbb/common/zldesk_ux.dart';
 import 'package:flutter_hbb/common/widgets/audio_input.dart';
 import 'package:flutter_hbb/common/widgets/setting_widgets.dart';
 import 'package:flutter_hbb/consts.dart';
@@ -72,6 +73,7 @@ class DesktopSettingPage extends StatefulWidget {
         bind.mainGetBuildinOption(key: kOptionHideSecuritySetting) != 'Y')
       SettingsTabKey.safety,
     if (!bind.isDisableSettings() &&
+        zldeskGeekModeUnlocked.value &&
         bind.mainGetBuildinOption(key: kOptionHideNetworkSetting) != 'Y')
       SettingsTabKey.network,
     if (!bind.isIncomingOnly()) SettingsTabKey.display,
@@ -1262,13 +1264,15 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
                 enabled: enabled, fakeValue: fakeValue),
             _OptionCheckBox(context, 'Enable audio', kOptionEnableAudio,
                 enabled: enabled, fakeValue: fakeValue),
-            _OptionCheckBox(context, 'Enable camera', kOptionEnableCamera,
-                enabled: enabled, fakeValue: fakeValue),
-            _OptionCheckBox(context, 'Enable terminal', kOptionEnableTerminal,
-                enabled: enabled, fakeValue: fakeValue),
-            _OptionCheckBox(
-                context, 'Enable TCP tunneling', kOptionEnableTunnel,
-                enabled: enabled, fakeValue: fakeValue),
+            if (zldeskGeekModeUnlocked.value) ...[
+              _OptionCheckBox(context, 'Enable camera', kOptionEnableCamera,
+                  enabled: enabled, fakeValue: fakeValue),
+              _OptionCheckBox(context, 'Enable terminal', kOptionEnableTerminal,
+                  enabled: enabled, fakeValue: fakeValue),
+              _OptionCheckBox(
+                  context, 'Enable TCP tunneling', kOptionEnableTunnel,
+                  enabled: enabled, fakeValue: fakeValue),
+            ],
             _OptionCheckBox(
                 context, 'Enable remote restart', kOptionEnableRemoteRestart,
                 enabled: enabled, fakeValue: fakeValue),
