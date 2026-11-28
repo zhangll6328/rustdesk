@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../common.dart';
+import '../../common/zldesk_ux.dart';
 import '../../common/widgets/dialog.dart';
 import '../../common/widgets/login.dart';
 import '../../consts.dart';
@@ -766,7 +767,16 @@ class _SettingsState extends State<SettingsPage> with WidgetsBindingObserver {
             ],
           ),
         SettingsSection(title: Text(translate("Settings")), tiles: [
-          if (!disabledSettings && !_hideNetwork && !_hideServer)
+          if (!zldeskGeekModeUnlocked.value)
+            SettingsTile(
+              title: Text('ZLDesk 专属中继'),
+              description: Text('已连接并锁定（普通用户极简模式）'),
+              leading: Icon(Icons.verified_user_outlined),
+            ),
+          if (zldeskGeekModeUnlocked.value &&
+              !disabledSettings &&
+              !_hideNetwork &&
+              !_hideServer)
             SettingsTile(
                 title: Text(translate('ID/Relay Server')),
                 leading: Icon(Icons.cloud),
@@ -776,21 +786,26 @@ class _SettingsState extends State<SettingsPage> with WidgetsBindingObserver {
                     setState(callback);
                   });
                 }),
-          if (!_hideNetwork && !_hideProxy)
+          if (zldeskGeekModeUnlocked.value && !_hideNetwork && !_hideProxy)
             SettingsTile(
                 title: Text(translate('Socks5/Http(s) Proxy')),
                 leading: Icon(Icons.network_ping),
                 onPressed: (context) {
                   changeSocks5Proxy();
                 }),
-          if (isAndroid && !bind.isOutgoingOnly())
+          if (zldeskGeekModeUnlocked.value &&
+              isAndroid &&
+              !bind.isOutgoingOnly())
             SettingsTile(
                 title: Text(translate('Deploy')),
                 leading: Icon(Icons.cloud_upload),
                 onPressed: (context) {
                   showDeployDialog();
                 }),
-          if (!disabledSettings && !_hideNetwork && !_hideWebSocket)
+          if (zldeskGeekModeUnlocked.value &&
+              !disabledSettings &&
+              !_hideNetwork &&
+              !_hideWebSocket)
             SettingsTile.switchTile(
               title: Text(translate('Use WebSocket')),
               initialValue: _allowWebSocket,
@@ -805,7 +820,7 @@ class _SettingsState extends State<SettingsPage> with WidgetsBindingObserver {
                       });
                     },
             ),
-          if (!_isUsingPublicServer)
+          if (zldeskGeekModeUnlocked.value && !_isUsingPublicServer)
             SettingsTile.switchTile(
               title: Text(translate('Allow insecure TLS fallback')),
               initialValue: _allowInsecureTlsFallback,
@@ -821,7 +836,10 @@ class _SettingsState extends State<SettingsPage> with WidgetsBindingObserver {
                       });
                     },
             ),
-          if (isAndroid && !outgoingOnly && !_isUsingPublicServer)
+          if (zldeskGeekModeUnlocked.value &&
+              isAndroid &&
+              !outgoingOnly &&
+              !_isUsingPublicServer)
             SettingsTile.switchTile(
               title: Text(translate('Disable UDP')),
               initialValue: _disableUdp,

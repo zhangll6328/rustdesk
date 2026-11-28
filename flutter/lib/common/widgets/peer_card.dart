@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../common.dart';
+import '../../common/zldesk_ux.dart';
 import '../../common/formatter/id_formatter.dart';
 import '../../models/peer_model.dart';
 import '../../models/platform_model.dart';
@@ -1003,17 +1004,21 @@ class RecentPeerCard extends BasePeerCard {
     final List<MenuEntryBase<String>> menuItems = [
       _connectAction(context),
       _transferFileAction(context),
-      _viewCameraAction(context),
-      _terminalAction(context),
+      if (zldeskGeekModeUnlocked.value) ...[
+        _viewCameraAction(context),
+        _terminalAction(context),
+      ],
     ];
 
-    if (peer.platform == kPeerPlatformWindows) {
+    if (zldeskGeekModeUnlocked.value && peer.platform == kPeerPlatformWindows) {
       menuItems.add(_terminalRunAsAdminAction(context));
     }
 
     final List favs = (await bind.mainGetFav()).toList();
 
-    if (isDesktop && peer.platform != kPeerPlatformAndroid) {
+    if (zldeskGeekModeUnlocked.value &&
+        isDesktop &&
+        peer.platform != kPeerPlatformAndroid) {
       menuItems.add(_tcpTunnelingAction(context));
     }
     // menuItems.add(await _openNewConnInOptAction(peer.id));
@@ -1068,15 +1073,19 @@ class FavoritePeerCard extends BasePeerCard {
     final List<MenuEntryBase<String>> menuItems = [
       _connectAction(context),
       _transferFileAction(context),
-      _viewCameraAction(context),
-      _terminalAction(context),
+      if (zldeskGeekModeUnlocked.value) ...[
+        _viewCameraAction(context),
+        _terminalAction(context),
+      ],
     ];
 
-    if (peer.platform == kPeerPlatformWindows) {
+    if (zldeskGeekModeUnlocked.value && peer.platform == kPeerPlatformWindows) {
       menuItems.add(_terminalRunAsAdminAction(context));
     }
 
-    if (isDesktop && peer.platform != kPeerPlatformAndroid) {
+    if (zldeskGeekModeUnlocked.value &&
+        isDesktop &&
+        peer.platform != kPeerPlatformAndroid) {
       menuItems.add(_tcpTunnelingAction(context));
     }
     // menuItems.add(await _openNewConnInOptAction(peer.id));
@@ -1128,17 +1137,21 @@ class DiscoveredPeerCard extends BasePeerCard {
     final List<MenuEntryBase<String>> menuItems = [
       _connectAction(context),
       _transferFileAction(context),
-      _viewCameraAction(context),
-      _terminalAction(context),
+      if (zldeskGeekModeUnlocked.value) ...[
+        _viewCameraAction(context),
+        _terminalAction(context),
+      ],
     ];
 
-    if (peer.platform == kPeerPlatformWindows) {
+    if (zldeskGeekModeUnlocked.value && peer.platform == kPeerPlatformWindows) {
       menuItems.add(_terminalRunAsAdminAction(context));
     }
 
     final List favs = (await bind.mainGetFav()).toList();
 
-    if (isDesktop && peer.platform != kPeerPlatformAndroid) {
+    if (zldeskGeekModeUnlocked.value &&
+        isDesktop &&
+        peer.platform != kPeerPlatformAndroid) {
       menuItems.add(_tcpTunnelingAction(context));
     }
     // menuItems.add(await _openNewConnInOptAction(peer.id));
@@ -1187,15 +1200,19 @@ class AddressBookPeerCard extends BasePeerCard {
     final List<MenuEntryBase<String>> menuItems = [
       _connectAction(context),
       _transferFileAction(context),
-      _viewCameraAction(context),
-      _terminalAction(context),
+      if (zldeskGeekModeUnlocked.value) ...[
+        _viewCameraAction(context),
+        _terminalAction(context),
+      ],
     ];
 
-    if (peer.platform == kPeerPlatformWindows) {
+    if (zldeskGeekModeUnlocked.value && peer.platform == kPeerPlatformWindows) {
       menuItems.add(_terminalRunAsAdminAction(context));
     }
 
-    if (isDesktop && peer.platform != kPeerPlatformAndroid) {
+    if (zldeskGeekModeUnlocked.value &&
+        isDesktop &&
+        peer.platform != kPeerPlatformAndroid) {
       menuItems.add(_tcpTunnelingAction(context));
     }
     // menuItems.add(await _openNewConnInOptAction(peer.id));
@@ -1344,15 +1361,19 @@ class MyGroupPeerCard extends BasePeerCard {
     final List<MenuEntryBase<String>> menuItems = [
       _connectAction(context),
       _transferFileAction(context),
-      _viewCameraAction(context),
-      _terminalAction(context),
+      if (zldeskGeekModeUnlocked.value) ...[
+        _viewCameraAction(context),
+        _terminalAction(context),
+      ],
     ];
 
-    if (peer.platform == kPeerPlatformWindows) {
+    if (zldeskGeekModeUnlocked.value && peer.platform == kPeerPlatformWindows) {
       menuItems.add(_terminalRunAsAdminAction(context));
     }
 
-    if (isDesktop && peer.platform != kPeerPlatformAndroid) {
+    if (zldeskGeekModeUnlocked.value &&
+        isDesktop &&
+        peer.platform != kPeerPlatformAndroid) {
       menuItems.add(_tcpTunnelingAction(context));
     }
     // menuItems.add(await _openNewConnInOptAction(peer.id));
